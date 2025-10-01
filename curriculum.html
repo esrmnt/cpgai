@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personalized AI/ML Mastery Plan</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Scholarly Graphite - Focuses on slate and deep blue to promote calm and focus. -->
+    <!-- Application Structure Plan: The application is a 7-month, tab-based interactive curriculum timeline. The structure uses monthly tabs for high-level navigation and responsive weekly cards (divided into Weekday/Weekend sessions) to present detailed, linked content. This structure was chosen for its optimal information architecture, breaking down 28 weeks of complex material into easily digestible, navigable chunks. The core interaction is progress tracking via checkboxes and an immediate, motivational progress bar visualization. -->
+    <!-- Visualization & Content Choices: Content (Weekly Topics, Objectives, Resources) -> Goal (Structured Learning) -> Presentation (Detailed HTML Cards & Tabs). Key Visualization: Progress Bar (Dynamic JS width update) -> Justification: Provides direct visual motivation and tracks the user's journey through the dense, chronological syllabus. No complex charts (Bar/Line) are needed as the data is purely categorical (completed/incomplete). -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .tab-active {
+            background-color: #1D4ED8;
+            color: #FFFFFF;
+            font-weight: 600;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+        }
+        .progress-bar-fill {
+            transition: width 0.5s ease-in-out;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800">
+
+    <div class="container mx-auto p-4 md:p-8 max-w-6xl">
+        <header class="text-center mb-8">
+            <h1 class="text-3xl md:text-4xl font-bold text-slate-900">28-Week AI/ML Mastery Curriculum</h1>
+            <p class="mt-2 text-lg text-slate-600">Comprehensive Resources for the IIT Delhi Programme (13 Hours/Week)</p>
+        </header>
+
+        <main>
+            <!-- Sticky Progress Bar and Tabs -->
+            <div class="sticky top-0 bg-slate-50/90 backdrop-blur-sm z-10 py-4 mb-6 shadow-md rounded-lg p-4 border border-slate-200">
+                <div class="mb-4">
+                    <div class="flex justify-between items-center mb-1">
+                        <span class="text-sm font-medium text-blue-700">Overall Progress</span>
+                        <span id="progress-text" class="text-sm font-medium text-blue-700">0%</span>
+                    </div>
+                    <div class="w-full bg-slate-200 rounded-full h-2.5">
+                        <div id="progress-bar" class="bg-blue-600 h-2.5 rounded-full progress-bar-fill" style="width: 0%"></div>
+                    </div>
+                </div>
+
+                <div id="tabs-container" class="flex flex-wrap justify-center gap-2 md:gap-4 mt-4"></div>
+            </div>
+            
+            <div id="plan-container" class="space-y-6">
+                <p class="text-center text-lg text-slate-500 py-10">Select a month above to view the detailed weekly plan.</p>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        const studyPlan = [
+            // Phase I: Quantitative Bedrock (Weeks 1-6)
+            { month: 1, week: 1, topic: "Linear Algebra: Foundations & SVD", objectives: ["Vector and Matrix Dot Product, Matrix-Vector Multiplication", "Matrix Decomposition (SVD) and its use in PCA"], sessions: [
+                { day: 'Weekday (3h)', title: 'Python Environment & Core Ops', resources: [
+                    { type: 'Resource', text: 'Install Python/NumPy/Pandas (Anaconda/Miniconda)', url: 'https://docs.anaconda.com/anaconda/install/' },
+                    { type: 'Read', text: 'Stanford CS229: Linear Algebra Review (PDF)', url: 'https://see.stanford.edu/materials/aimlcs229/cs229-linalg.pdf' },
+                    { type: 'Practice', text: 'NumPy Quickstart: Array Ops and Broadcasting', url: 'https://numpy.org/doc/stable/user/quickstart.html' }
+                ]},
+                { day: 'Weekend (10h)', title: 'Deep Dive: SVD & Decomposition', resources: [
+                    { type: 'Watch', text: '3Blue1Brown: Essence of Linear Algebra (Ep. 1-4)', url: 'https://www.youtube.com/playlist?list=PLZHQObOWTQDPD3MizzM2xVFitgF8hE_ab' },
+                    { type: 'Read', text: 'Deep Learning Book: Chapter 2 - Linear Algebra', url: 'https://www.deeplearningbook.org/contents/linear_algebra.html' },
+                    { type: 'Practice', text: 'Implement SVD on a matrix using NumPy', url: 'https://numpy.org/doc/stable/reference/generated/numpy.linalg.svd.html' }
+                ]}
+            ]},
+            { month: 1, week: 2, topic: "Probability Theory: Core Concepts", objectives: ["Random Variables (discrete/continuous)", "Bayes Theorem and Conditional Probability"], sessions: [
+                { day: 'Weekday (3h)', title: 'Random Variables & Distributions', resources: [
+                    { type: 'Watch', text: 'MIT 6.041 Prob. Lecture 3: Discrete Random Variables', url: 'https://www.youtube.com/watch?v=F07W0G8GgX4' },
+                    { type: 'Read', text: 'Deep Learning Book: Chapter 3 - Probability and Information Theory', url: 'https://www.deeplearningbook.org/contents/prob.html' }
+                ]},
+                { day: 'Weekend (10h)', title: 'Bayes Theorem & Conditional Prob', resources: [
+                    { type: 'Watch', text: '3Blue1Brown: Visualizing Bayes Theorem', url: 'https://www.youtube.com/watch?v=HZGCoVF3YvM' },
+                    { type: 'Read', text: 'A Gentle Introduction to Bayes Theorem for ML', url: 'https://machinelearningmastery.com/bayes-theorem-for-machine-learning/' },
+                    { type: 'Practice', text: 'Solve Stanford Stat 110 probability problems', url: 'https://projects.iq.harvard.edu/stat110/homework' }
+                ]}
+            ]},
+            { month: 1, week: 3, topic: "Optimisation: Gradient Descent & Convexity", objectives: ["Gradient Descent for minimizing cost functions", "First/Second Order Conditions and Convex Optimisation"], sessions: [
+                { day: 'Weekday (3h)', title: 'Gradient Descent Mechanics', resources: [
+                    { type: 'Watch', text: 'Gradient Descent, how neural networks learn (3Blue1Brown)', url: 'https://www.youtube.com/watch?v=IHZwWFHWa-w' },
+                    { type: 'Read', text: 'Deep Learning Book: Chapter 4 - Numerical Computation', url: 'https://www.deeplearningbook.org/contents/numerical.html' }
+                ]},
+                { day: 'Weekend (10h)', title: 'Convexity, KL-Divergence, and Practice', resources: [
+                    { type: 'Read', text: 'Convex Optimization Overview (Stanford)', url: 'https://web.stanford.edu/~boyd/cvxbook/bv_cvxbook_extra_exercises.pdf' },
+                    { type: 'Watch', text: 'KL Divergence Explained (StatQuest)', url: 'https://www.youtube.com/watch?v=Sx_f9lGKgvw' },
+                    { type: 'Practice', text: 'Code Gradient Descent from scratch (Jupyter Notebook)', url: 'https://www.youtube.com/watch?v=4-iJ1i-xK6s' }
+                ]}
+            ]},
+            { month: 1, week: 4, topic: "Intro to ML: Regression", objectives: ["Implement Linear Regression (OLM/L2)", "Understand Logistic Regression for binary classification"], sessions: [
+                { day: 'Weekday (3h)', title: 'Linear Regression and Cost Functions', resources: [
+                    { type: 'Watch', text: 'Andrew Ng: Linear Regression with One Variable (Coursera)', url: 'https://www.youtube.com/watch?v=kHwlB_j7Hkc&list=PLZ9qNFMHZ-A4ryc3rFkLkvspb5NduxXb1&index=3' },
+                    { type: 'Read', text: 'Scikit-learn documentation on Linear Models', url: 'https://scikit-learn.org/stable/modules/linear_model.html' }
+                ]},
+                { day: 'Weekend (10h)', title: 'Logistic Regression Implementation', resources: [
+                    { type: 'Watch', text: 'Andrew Ng: Logistic Regression & Sigmoid Function', url: 'https://www.youtube.com/watch?v=HIQlmHxI6-0&list=PLZ9qNFMHZ-A4ryc3rFkLkvspb5NduxXb1&index=9' },
+                    { type: 'Practice', text: 'Implement Logistic Regression on the Iris Dataset (Scikit-learn)', url: 'https://scikit-learn.org/stable/auto_examples/linear_model/plot_iris_logistic.html' }
+                ]}
+            ]},
+            // Phase II: Supervised & Unsupervised Learning (Weeks 5-8)
+            { month: 2, week: 5, topic: "Supervised Learning: SVM & Decision Trees", objectives: ["Support Vector Machines (maximal margin)", "Decision Trees (Information Gain/Gini)"], sessions: [
+                { day: 'Weekday (3h)', title: 'SVM and The Kernel Trick', resources: [
+                    { type: 'Watch', text: 'StatQuest: Support Vector Machines', url: 'https://www.youtube.com/watch?v=efR1C6CvprE' },
+                    { type: 'Read', text: 'SVM Overview (Scikit-learn)', url: 'https://scikit-learn.org/stable/modules/svm.html' }
+                ]},
+                { day: 'Weekend (10h)', title: 'Decision Trees and Pruning', resources: [
+                    { type: 'Watch', text: 'StatQuest: Decision Trees', url: 'https://www.youtube.com/watch?v=7VeUPuFGJHk' },
+                    { type: 'Practice', text: 'Build and Visualize a Decision Tree (Scikit-learn)', url: 'https://scikit-learn.org/stable/auto_examples/tree/plot_tree_visualization.html' }
+                ]}
+            ]},
+            { month: 2, week: 6, topic: "Ensemble Methods", objectives: ["Bagging (Random Forest) vs. Boosting (Gradient Boosting, XGBoost)"], sessions: [
+                { day: 'Weekday (3h)', title: 'Random Forests and Bagging', resources: [
+                    { type: 'Watch', text: 'StatQuest: Random Forests', url: 'https://www.youtube.com/watch?v=J4W_rPggl_c' },
+                    { type: 'Read', text: 'Random Forest documentation (Scikit-learn)', url: 'https://scikit-learn.org/stable/modules/ensemble.html#random-forests' }
+                ]},
+                { day: 'Weekend (10h)', title: 'Gradient Boosting (XGBoost/LightGBM)', resources: [
+                    { type: 'Watch', text: 'StatQuest: Gradient Boost (XGBoost)', url: 'https://www.youtube.com/watch?v=GrJP9FLV3FE' },
+                    { type: 'Practice', text: 'Kaggle: XGBoost on a tabular dataset', url: 'https://www.kaggle.com/code/dansbecker/xgboost/notebook' }
+                ]}
+            ]},
+            { month: 2, week: 7, topic: "Unsupervised: Clustering & Association", objectives: ["K-Means, Hierarchical Clustering", "Understanding Silhouette Score"], sessions: [
+                { day: 'Weekday (3h)', title: 'K-Means and Elbow Method', resources: [
+                    { type: 'Watch', text: 'StatQuest: K-means clustering', url: 'https://www.youtube.com/watch?v=4b5d3muPQmA' },
+                    { type: 'Read', text: 'K-Means Clustering (Scikit-learn)', url: 'https://scikit-learn.org/stable/modules/clustering.html#k-means' }
+                ]},
+                { day: 'Weekend (10h)', title: 'Hierarchical & DBSCAN', resources: [
+                    { type: 'Watch', text: 'StatQuest: Hierarchical Clustering', url: 'https://www.youtube.com/watch?v=7xHsRkOdVwo' },
+                    { type: 'Practice', text: 'Compare K-Means and DBSCAN on synthetic data', url: 'https://scikit-learn.org/stable/auto_examples/cluster/plot_dbscan.html' }
+                ]}
+            ]},
+            { month: 2, week: 8, topic: "Unsupervised: Dimensionality Reduction", objectives: ["PCA, LDA, t-SNE for feature extraction and visualization"], sessions: [
+                { day: 'Weekday (3h)', title: 'Principal Component Analysis (PCA)', resources: [
+                    { type: 'Watch', text: 'StatQuest: PCA Step-by-Step', url: 'https://www.youtube.com/watch?v=FgakZw6K1QQ' },
+                    { type: 'Read', text: 'PCA using Scikit-learn', url: 'https://scikit-learn.org/stable/modules/decomposition.html#pca' }
+                ]},
+                { day: 'Weekend (10h)', title: 'LDA and t-SNE for Visualization', resources: [
+                    { type: 'Watch', text: 'StatQuest: t-SNE, Clearly Explained', url: 'https://www.youtube.com/watch?v=NEaUSP4YerM' },
+                    { type: 'Practice', text: 'Visualize MNIST dataset using t-SNE in Python', url: 'https://www.datacamp.com/tutorial/principal-component-analysis-in-python' }
+                ]}
+            ]},
+            // Phase III: Artificial Neural Networks & Core NLP (Weeks 9-12)
+            { month: 3, week: 9, topic: "Artificial Neural Networks (ANN)", objectives: ["Perceptron and Multilayer Networks", "Setup PyTorch/TensorFlow"], sessions: [
+                { day: 'Weekday (3h)', title: 'Perceptron and Feedforward Networks', resources: [
+                    { type: 'Watch', text: 'Neural Networks and Deep Learning (3Blue1Brown, Ch 1 & 2)', url: 'https://www.youtube.com/watch?v=aircAruvnKk' },
+                    { type: 'Read', text: 'Deep Learning Book: Chapter 6 - Deep Feedforward Networks', url: 'https://www.deeplearningbook.org/contents/mlp.html' }
+                ]},
+                { day: 'Weekend (10h)', title: 'PyTorch/TensorFlow Setup & Tensors', resources: [
+                    { type: 'Resource', text: 'PyTorch Installation Guide', url: 'https://pytorch.org/get-started/locally/' },
+                    { type: 'Resource', text: 'TensorFlow Installation Guide', url: 'https://www.tensorflow.org/install' },
+                    { type: 'Practice', text: 'PyTorch: Tensors and Autograd Basics (Tutorial)', url: 'https://pytorch.org/tutorials/beginner/basics/intro.html' }
+                ]}
+            ]},
+            { month: 3, week: 10, topic: "ANN Training: Backpropagation", objectives: ["Understanding the Backpropagation algorithm and its relationship to the chain rule"], sessions: [
+                { day: 'Weekday (3h)', title: 'Backpropagation Intuition', resources: [
+                    { type: 'Watch', text: 'What is backpropagation really doing? (3Blue1Brown, Ch 3)', url: 'https://www.youtube.com/watch?v=Ilg3gGewQ5U' },
+                    { type: 'Read', text: 'Calculus on Computational Graphs: Backpropagation', url: 'http://colah.github.io/posts/2015-08-Backprop/' }
+                ]},
+                { day: 'Weekend (10h)', title: 'Project: Implement FCNN in PyTorch', resources: [
+                    { type: 'Practice', text: 'Implement a fully connected neural network (FCNN) for MNIST', url: 'https://github.com/pytorch/examples/blob/main/mnist/main.py' },
+                    { type: 'Practice', text: 'Train and visualise accuracy and loss over epochs', url: 'https://pytorch.org/tutorials/recipes/recipes/tensorboard_with_pytorch.html' }
+                ]}
+            ]},
+            { month: 3, week: 11, topic: "Basic Text Processing & Tools", objectives: ["Tokenization, Morphology, Stemming, Edit Distance", "Using NLTK and spaCy"], sessions: [
+                { day: 'Weekday (3h)', title: 'NLTK and spaCy Fundamentals', resources: [
+                    { type: 'Read', text: 'Jurafsky & Martin (SLP3): Chapter 2 - Regular Expressions and Automata', url: 'https://web.stanford.edu/~jurafsky/slp3/2.pdf' },
+                    { type: 'Resource', text: 'spaCy 101: Everything you need to know', url: 'https://spacy.io/usage/spacy-101' }
+                ]},
+                { day: 'Weekend (10h)', title: 'Stemming, Lemmatization, Edit Distance', resources: [
+                    { type: 'Read', text: 'Stemming and Lemmatization in Python (DataCamp)', url: 'https://www.datacamp.com/tutorial/stemming-lemmatization-python' },
+                    { type: 'Watch', text: 'Edit Distance (Levenshtein) - Dynamic Programming', url: 'https://www.youtube.com/watch?v=XYi2-LPrwm4' },
+                    { type: 'Practice', text: 'Code Levenshtein distance from scratch', url: 'https://www.python-course.eu/levenshtein_distance.php' }
+                ]}
+            ]},
+            { month: 3, week: 12, topic: "Language Modelling: N-gram & Smoothing", objectives: ["N-gram Modelling and Perplexity", "Smoothing Techniques (Add-one, Kneser-Ney)"], sessions: [
+                { day: 'Weekday (3h)', title: 'N-gram Models and Perplexity', resources: [
+                    { type: 'Watch', text: 'Stanford CS224N Lecture 2: Language Models', url: 'https://www.youtube.com/watch?v=rmVRLeJRkl4&list=PLoROMvodv4rOhcuXMZkNm7j3fVwBBY42z&index=2' },
+                    { type: 'Read', text: 'Jurafsky & Martin (SLP3): Chapter 3 - N-gram Language Models', url: 'https://web.stanford.edu/~jurafsky/slp3/3.pdf' }
+                ]},
+                { day: 'Weekend (10h)', title: 'Smoothing Implementation', resources: [
+                    { type: 'Read', text: 'Understanding Language Model Perplexity', url: 'https://towardsdatascience.com/perplexity-in-language-models-87a196019a94' },
+                    { type: 'Practice', text: 'Build an N-gram model with Add-one smoothing (NLTK)', url: 'https://www.nltk.org/api/nltk.lm.html' }
+                ]}
+            ]},
+            // Phase IV: Advanced NLP & Deep Learning Architectures (Weeks 13-16)
+            { month: 4, week: 13, topic: "POS Tagging and Sequential Learning", objectives: ["Hidden Markov Models (HMM)", "Viterbi Algorithm for sequence prediction"], sessions: [
+                { day: 'Weekday (3h)', title: 'HMMs for Sequence Tagging', resources: [
+                    { type: 'Watch', text: 'StatQuest: Hidden Markov Models', url: 'https://www.youtube.com/watch?v=kqSzLo9fenk' },
+                    { type: 'Read', text: 'Jurafsky & Martin (SLP3): Chapter 8 - POS Tagging', url: 'https://web.stanford.edu/~jurafsky/slp3/8.pdf' }
+                ]},
+                { day: 'Weekend (10h)', title: 'Viterbi Algorithm & Implementation', resources: [
+                    { type: 'Watch', text: 'The Viterbi Algorithm - A worked example', url: 'https://www.youtube.com/watch?v=mHEKZ8fh120' },
+                    { type: 'Practice', text: 'Implement the Viterbi Algorithm for a small HMM', url: 'https://www.upenn.edu/ling/courses/ling525/hmm_tutorial.html' }
+                ]}
+            ]},
+            { month: 4, week: 14, topic: "Parsing: Syntactic Analysis", objectives: ["Constituency vs Dependency Parsing", "CKY Algorithm, CFG, PCFG"], sessions: [
+                { day: 'Weekday (3h)', title: 'Constituency Grammars & CFGs', resources: [
+                    { type: 'Watch', text: 'Stanford NLP - Constituency Parsing', url: 'https://www.youtube.com/watch?v=p4333V-L368' },
+                    { type: 'Read', text: 'Jurafsky & Martin (SLP3): Chapter 11 - Constituency Grammars', url: 'https://web.stanford.edu/~jurafsky/slp3/11.pdf' }
+                ]},
+                { day: 'Weekend (10h)', title: 'Dependency Parsing & CKY Algorithm', resources: [
+                    { type: 'Watch', text: 'The CKY Algorithm Explained', url: 'https://www.youtube.com/watch?v=sS-Lcyx8D5E' },
+                    { type: 'Practice', text: 'Explore and visualize Dependency Parsing with spaCy', url: 'https://spacy.io/usage/visualizers' }
+                ]}
+            ]},
+            { month: 4, week: 15, topic: "Text Classification: Traditional ML", objectives: ["Naive Bayes Algorithm for text", "Lexical Similarity: TF-IDF"], sessions: [
+                { day: 'Weekday (3h)', title: 'Naive Bayes for Classification', resources: [
+                    { type: 'Watch', text: 'Naive Bayes, Clearly Explained!!! (StatQuest)', url: 'https://www.youtube.com/watch?v=O2L2Uv9pdDA' },
+                    { type: 'Read', text: 'Jurafsky & Martin (SLP3): Chapter 4 - Naive Bayes and Text Classification', url: 'https://web.stanford.edu/~jurafsky/slp3/4.pdf' }
+                ]},
+                { day: 'Weekend (10h)', title: 'TF-IDF Vectorization', resources: [
+                    { type: 'Watch', text: 'StatQuest: TF-IDF (Term Frequency-Inverse Document Frequency)', url: 'https://www.youtube.com/watch?v=4vT4fzjkcCw' },
+                    { type: 'Practice', text: 'Build a text classifier using Scikit-learn and TF-IDF', url: 'https://www.kaggle.com/code/kredy10/simple-fast-spam-detector-with-tfidf' }
+                ]}
+            ]},
+            { month: 4, week: 16, topic: "Text Classification: Word Embeddings", objectives: ["Word2Vec (Skip-gram, CBOW), GloVe", "Using pre-trained embeddings for classification"], sessions: [
+                { day: 'Weekday (3h)', title: 'Word2Vec and Contextual Embeddings', resources: [
+                    { type: 'Watch', text: 'Stanford CS224N Lecture 1: Word Vectors', url: 'https://www.youtube.com/watch?v=rmVRLeJRkl4' },
+                    { type: 'Read', text: 'The Illustrated Word2vec by Jay Alammar', url: 'https://jalammar.github.io/illustrated-word2vec/' }
+                ]},
+                { day: 'Weekend (10h)', title: 'GloVe and Embeddings Practice', resources: [
+                    { type: 'Read', text: 'GloVe: Global Vectors for Word Representation (Original Paper)', url: 'https://nlp.stanford.edu/projects/glove/' },
+                    { type: 'Practice', text: 'Load and use pre-trained GloVe embeddings in Python', url: 'https://www.kaggle.com/code/pierremegret/gensim-word2vec-tutorial-on-amazon-reviews' }
+                ]}
+            ]},
+            // Phase V: Neural Language Models & Transformers (Weeks 17-20)
+            { month: 5, week: 17, topic: "Neural Language Models: RNN/LSTM/GRU", objectives: ["RNN architecture and limitations", "LSTM/GRU for sequence memory and tackling vanishing gradients"], sessions: [
+                { day: 'Weekday (3h)', title: 'RNNs and Vanishing Gradients', resources: [
+                    { type: 'Read', text: 'The Unreasonable Effectiveness of RNNs (Karpathy)', url: 'http://karpathy.github.io/2015/05/21/rnn-effectiveness/' },
+                    { type: 'Watch', text: 'Stanford CS224N Lecture 6: Recurrent Neural Networks', url: 'https://www.youtube.com/watch?v=P_H32e-16ag' }
+                ]},
+                { day: 'Weekend (10h)', title: 'LSTMs and GRUs Deep Dive', resources: [
+                    { type: 'Read', text: 'Understanding LSTMs by Chris Olah', url: 'https://colah.github.io/posts/2015-08-Understanding-LSTMs/' },
+                    { type: 'Practice', text: 'Build an LSTM for stock price prediction (TensorFlow/PyTorch)', url: 'https://www.datacamp.com/tutorial/lstm-models-python-tensorflow' }
+                ]}
+            ]},
+            { month: 5, week: 18, topic: "Sequence-to-Sequence & Attention", objectives: ["Seq2Seq (Encoder-Decoder)", "Introduction to the Attention mechanism"], sessions: [
+                { day: 'Weekday (3h)', title: 'Encoder-Decoder Architecture', resources: [
+                    { type: 'Read', text: 'A Gentle Introduction to Encoder-Decoder Models', url: 'https://machinelearningmastery.com/encoder-decoder-models/' },
+                    { type: 'Watch', text: 'Sequence to Sequence Learning (Andrew Ng)', url: 'https://www.youtube.com/watch?v=yA-TfIsGGcE' }
+                ]},
+                { day: 'Weekend (10h)', title: 'Visualizing Attention', resources: [
+                    { type: 'Read', text: 'Attention and Augmented Recurrent Neural Networks', url: 'https://distill.pub/2016/augmented-rnns/' },
+                    { type: 'Practice', text: 'Neural machine translation with attention (TensorFlow tutorial)', url: 'https://www.tensorflow.org/text/tutorials/nmt_with_attention' }
+                ]}
+            ]},
+            { month: 5, week: 19, topic: "Transformer Architecture", objectives: ["Self-Attention, Multi-Head Attention", "Positional Encoding, Layer Normalization"], sessions: [
+                { day: 'Weekday (3h)', title: 'The Transformer Architecture', resources: [
+                    { type: 'Watch', text: 'The Transformer architecture (3Blue1Brown)', url: 'https://www.youtube.com/watch?v=wjZofJX0v4M' },
+                    { type: 'Read', text: 'The Illustrated Transformer by Jay Alammar', url: 'https://jalammar.github.io/illustrated-transformer/' }
+                ]},
+                { day: 'Weekend (10h)', title: 'Deep Dive: Attention Is All You Need', resources: [
+                    { type: 'Read', text: 'Attention Is All You Need (Original Paper)', url: 'https://arxiv.org/abs/1706.03762' },
+                    { type: 'Practice', text: 'Implement a simplified self-attention mechanism in NumPy/PyTorch', url: 'https://www.youtube.com/watch?v=U0s0f995w14' }
+                ]}
+            ]},
+            { month: 5, week: 20, topic: "Project: Fine-tuning & Evaluation", objectives: ["Use Hugging Face (HF) for pre-trained models", "Fine-tune BERT for text classification, evaluate metrics"], sessions: [
+                { day: 'Weekday (3h)', title: 'Hugging Face Ecosystem & Tokenizers', resources: [
+                    { type: 'Resource', text: 'Hugging Face Course - Chapter 1: Transformer Models', url: 'https://huggingface.co/course/chapter1' },
+                    { type: 'Read', text: 'Hugging Face Course - Chapter 3: Preprocessing data', url: 'https://huggingface.co/course/chapter3/2?fw=pt' }
+                ]},
+                { day: 'Weekend (10h)', title: 'Classification Fine-Tuning Project', resources: [
+                    { type: 'Practice', text: 'Fine-tune a pre-trained transformer model for text classification (HF tutorial)', url: 'https://huggingface.co/docs/transformers/training' },
+                    { type: 'Read', text: 'Understanding Classification Evaluation Metrics (Precision, Recall, F1)', url: 'https://towardsdatascience.com/the-5-classification-evaluation-metrics-you-must-know-aa9778472262' }
+                ]}
+            ]},
+            // Phase VI: LLMs, Fine-tuning, and RAG (Weeks 21-24)
+            { month: 6, week: 21, topic: "Pre-trained Models: BERT, GPT, T5", objectives: ["Architecture and training of BERT (Encoder), GPT (Decoder), T5 (Seq2Seq)"], sessions: [
+                { day: 'Weekday (3h)', title: 'BERT and Masked Language Modeling', resources: [
+                    { type: 'Read', text: 'The Illustrated BERT by Jay Alammar', url: 'https://jalammar.github.io/illustrated-bert/' },
+                    { type: 'Watch', text: 'Chris McCormick: What is BERT?', url: 'https://www.youtube.com/watch?v=BhlOGGzC0Q0' }
+                ]},
+                { day: 'Weekend (10h)', title: 'GPT (Generative) and T5 (Seq2Seq)', resources: [
+                    { type: 'Read', text: 'The Illustrated GPT-2 by Jay Alammar', url: 'https://jalammar.github.io/illustrated-gpt2/' },
+                    { type: 'Read', text: 'Exploring the Limits of Transfer Learning with a Unified Text-to-Text Transformer (T5 Paper)', url: 'https://arxiv.org/abs/1910.10683' }
+                ]}
+            ]},
+            { month: 6, week: 22, topic: "Fine-tuning Strategies: PEFT", objectives: ["Task-specific fine-tuning vs Instruction fine-tuning", "Parameter-Efficient Fine-Tuning (PEFT) like LoRA"], sessions: [
+                { day: 'Weekday (3h)', title: 'Instruction Tuning & Prompting', resources: [
+                    { type: 'Read', text: 'An introduction to instruction-tuning', url: 'https://www.promptingguide.ai/techniques/instruction-tuning' },
+                    { type: 'Resource', text: 'Hugging Face Course - Fine-tuning with a custom dataset', url: 'https://huggingface.co/course/chapter5/4?fw=pt' }
+                ]},
+                { day: 'Weekend (10h)', title: 'Project: Implement PEFT (LoRA)', resources: [
+                    { type: 'Resource', text: 'Hugging Face PEFT Library Documentation (LoRA)', url: 'https://huggingface.co/docs/peft/en/conceptual_guides/lora' },
+                    { type: 'Practice', text: 'Fine-tune Llama or Mistral using QLoRA/PEFT', url: 'https://www.datacamp.com/tutorial/how-to-fine-tune-llama-2' }
+                ]}
+            ]},
+            { month: 6, week: 23, topic: "Preference Tuning (RLHF/PPO)", objectives: ["Reward Models (RM)", "Reinforcement Learning from Human Feedback (RLHF) and PPO algorithm"], sessions: [
+                { day: 'Weekday (3h)', title: 'RLHF Concepts and Steps', resources: [
+                    { type: 'Read', text: 'Illustrated Reinforcement Learning from Human Feedback (RLHF)', url: 'https://huggingface.co/blog/rlhf' },
+                    { type: 'Watch', text: 'RLHF Explained (DeepMind)', url: 'https://www.youtube.com/watch?v=oePj-E9o-14' }
+                ]},
+                { day: 'Weekend (10h)', title: 'Project: Simple Reward Model', resources: [
+                    { type: 'Practice', text: 'Create a simple reward model using Python/PyTorch for a sentiment task', url: 'https://huggingface.co/docs/trl/en/reward_modeling' },
+                    { type: 'Read', text: 'Proximal Policy Optimization (PPO) Explained', url: 'https://huggingface.co/blog/deep-rl-ppo' }
+                ]}
+            ]},
+            { month: 6, week: 24, topic: "Prompting Strategies", objectives: ["In-context Learning (ICL), Few-shot", "Chain-of-Thought (CoT), Knowledge Probing"], sessions: [
+                { day: 'Weekday (3h)', title: 'ICL and Basic Prompting', resources: [
+                    { type: 'Read', text: 'Prompting Guide - Techniques (Zero-shot, Few-shot)', url: 'https://www.promptingguide.ai/techniques/zeroshot' },
+                    { type: 'Watch', text: 'A Survey of Large Language Models (LLM Prompting section)', url: 'https://arxiv.org/abs/2303.18234' }
+                ]},
+                { day: 'Weekend (10h)', title: 'Advanced Reasoning Prompting', resources: [
+                    { type: 'Read', text: 'Chain-of-Thought Prompting Elicits Reasoning (Original Paper)', url: 'https://arxiv.org/abs/2201.11903' },
+                    { type: 'Practice', text: 'Compare the performance of different LLMs on reasoning tasks using CoT vs. Zero-shot prompting', url: 'https://www.promptingguide.ai/models/llamas' }
+                ]}
+            ]},
+            // Phase VII: Advanced LLM Engineering & Ethics (Weeks 25-28)
+            { month: 7, week: 25, topic: "Augmented LLMs: RAG", objectives: ["Retrieval-Augmented Generation (RAG) architecture", "Tool Augmented LLM for external API calls"], sessions: [
+                { day: 'Weekday (3h)', title: 'RAG Architecture and Vector Databases', resources: [
+                    { type: 'Read', text: 'What is Retrieval-Augmented Generation?', url: 'https://research.ibm.com/blog/retrieval-augmented-generation-RAG' },
+                    { type: 'Watch', text: 'LangChain & Vector Databases in Production', url: 'https://www.youtube.com/watch?v=MlyoObOK-Hs' }
+                ]},
+                { day: 'Weekend (10h)', title: 'Project: Implement a Simple RAG', resources: [
+                    { type: 'Practice', text: 'Build a RAG system using LangChain and a simple document corpus', url: 'https://python.langchain.com/v0.1/docs/use_cases/question_answering/' },
+                    { type: 'Read', text: 'A Survey of Tool-Augmented LLMs', url: 'https://arxiv.org/abs/2311.05122' }
+                ]}
+            ]},
+            { month: 7, week: 26, topic: "Vision-Language Models (VLM) & Multimodality", objectives: ["Understanding how VLMs (e.g., CLIP) combine text and image data", "Introduction to multi-modal applications"], sessions: [
+                { day: 'Weekday (3h)', title: 'Multimodal Architectures (CLIP)', resources: [
+                    { type: 'Read', text: 'CLIP: Connecting Text and Images (OpenAI Blog)', url: 'https://openai.com/research/clip' },
+                    { type: 'Watch', text: 'Multimodal Deep Learning (Stanford CS224N)', url: 'https://www.youtube.com/watch?v=yK44s8Qp4J4' }
+                ]},
+                { day: 'Weekend (10h)', title: 'VLM Usage and Practice', resources: [
+                    { type: 'Practice', text: 'Use a pre-trained VLM (e.g., in Hugging Face) for zero-shot image classification', url: 'https://huggingface.co/docs/transformers/model_doc/clip' },
+                    { type: 'Read', text: 'Foundational Models: Multimodal Systems', url: 'https://www.databricks.com/glossary/multimodal-ai' }
+                ]}
+            ]},
+            { month: 7, week: 27, topic: "AI Ethics, Bias, and Security", objectives: ["Misinformation, Bias, and Toxicity", "Mitigation strategies for fairness and security"], sessions: [
+                { day: 'Weekday (3h)', title: 'Understanding Bias and Fairness in AI', resources: [
+                    { type: 'Watch', text: 'The problem with bias in AI (Joy Buolamwini)', url: 'https://www.youtube.com/watch?v=QxuyfWoVV98' },
+                    { type: 'Read', text: 'Hugging Face Course - Bias and Fairness', url: 'https://huggingface.co/course/chapter9/1' }
+                ]},
+                { day: 'Weekend (10h)', title: 'Toxicity, Security, and Hallucination', resources: [
+                    { type: 'Read', text: 'Toxicity Detection and Mitigation', url: 'https://arxiv.org/abs/2104.04487' },
+                    { type: 'Read', text: 'The Alignment Problem: Hallucinations in LLMs', url: 'https://arxiv.org/abs/2304.00412' },
+                    { type: 'Practice', text: 'Experiment with adversarial prompting (jailbreaking) on an open-source model', url: 'https://arxiv.org/abs/2307.15043' }
+                ]}
+            ]},
+            { month: 7, week: 28, topic: "Capstone Review & Future Research", objectives: ["Review all major projects and concepts (Math, ML, NLP, LLMs, Ethics)", "Identify a final project/research area"], sessions: [
+                { day: 'Weekday (3h)', title: 'Consolidate Knowledge', resources: [
+                    { type: 'Practice', text: 'Refactor and document your three most challenging projects', url: '#' },
+                    { type: 'Read', text: 'Re-read the Linear Algebra and Optimisation chapters', url: 'https://www.deeplearningbook.org/contents/linear_algebra.html' }
+                ]},
+                { day: 'Weekend (10h)', title: 'Research Frontier Exploration', resources: [
+                    { type: 'Read', text: 'Browse recent LLM and VLM papers on arXiv (cs.CL, cs.LG)', url: 'https://arxiv.org/' },
+                    { type: 'Read', text: 'State of AI Report (Latest Edition)', url: 'https://www.stateof.ai/' },
+                    { type: 'Practice', text: 'Draft a one-page research proposal on a cutting-edge topic', url: '#' }
+                ]}
+            ]},
+        ];
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const tabsContainer = document.getElementById('tabs-container');
+            const planContainer = document.getElementById('plan-container');
+            const progressBar = document.getElementById('progress-bar');
+            const progressText = document.getElementById('progress-text');
+
+            const totalWeeks = studyPlan.length;
+            let completedWeeks = new Set();
+            
+            const uniqueMonths = [...new Set(studyPlan.map(item => item.month))];
+            
+            function loadState() {
+                const saved = localStorage.getItem('completedWeeks');
+                if (saved) {
+                    completedWeeks = new Set(JSON.parse(saved));
+                }
+            }
+
+            function saveState() {
+                localStorage.setItem('completedWeeks', JSON.stringify([...completedWeeks]));
+            }
+            
+            function updateProgress() {
+                const progress = (completedWeeks.size / totalWeeks) * 100;
+                progressBar.style.width = `${progress}%`;
+                progressText.textContent = `${Math.round(progress)}%`;
+            }
+
+            function renderPlan(month) {
+                planContainer.innerHTML = '';
+                
+                const intro = document.createElement('p');
+                intro.className = "text-md text-slate-700 mb-6 border-b pb-4 border-slate-300";
+                intro.innerHTML = `Welcome to **Month ${month}** of your specialized curriculum. This section is structured to reinforce the core concepts taught in the IIT D program by providing canonical texts, video lectures, and hands-on coding exercises. Your goal this month is to master the following 4 weeks of content, ensuring deep understanding before moving on.`;
+                planContainer.appendChild(intro);
+
+                const weeksOfMonth = studyPlan.filter(item => item.month === month);
+                
+                weeksOfMonth.forEach(weekData => {
+                    const isCompleted = completedWeeks.has(weekData.week);
+                    
+                    const weekElement = document.createElement('div');
+                    weekElement.className = 'bg-white p-6 rounded-xl shadow-lg border border-slate-200 transition duration-300 hover:shadow-xl';
+                    
+                    let sessionsHtml = '';
+                    weekData.sessions.forEach(session => {
+                        let resourcesHtml = session.resources.map(res => {
+                            let icon;
+                            let color;
+                            switch(res.type) {
+                                case 'Watch': icon = '▶️'; color = 'text-red-600'; break;
+                                case 'Read': icon = '📚'; color = 'text-green-600'; break;
+                                case 'Practice': icon = '💻'; color = 'text-blue-600'; break;
+                                case 'Resource': icon = '🔗'; color = 'text-yellow-600'; break;
+                                default: icon = '📄'; color = 'text-slate-600';
+                            }
+                            return `
+                                <li class="flex items-start space-x-3">
+                                    <span class="flex-shrink-0 text-lg ${color}">${icon}</span>
+                                    <span class="flex-shrink-0 text-sm font-semibold text-slate-500 w-16">${res.type}:</span>
+                                    <a href="${res.url}" target="_blank" rel="noopener noreferrer" class="text-slate-700 hover:text-blue-600 hover:underline transition-colors duration-150 text-sm">${res.text}</a>
+                                </li>
+                            `;
+                        }).join('');
+
+                        sessionsHtml += `
+                            <div class="mt-4 bg-slate-50 p-4 rounded-lg border border-slate-200">
+                                <h4 class="font-bold text-slate-900 flex items-center">
+                                    <span class="text-blue-500 mr-2">📅</span>
+                                    ${session.title} 
+                                </h4>
+                                <ul class="mt-2 space-y-2 text-sm">
+                                    ${resourcesHtml}
+                                </ul>
+                            </div>
+                        `;
+                    });
+
+                    weekElement.innerHTML = `
+                        <div class="flex justify-between items-start">
+                            <div class="pr-4">
+                                <p class="text-sm font-bold text-blue-700 uppercase tracking-wider">Week ${weekData.week} (${weekData.month}/7)</p>
+                                <h3 class="text-2xl font-extrabold mt-1 text-slate-900">${weekData.topic}</h3>
+                                <p class="mt-3 text-slate-700"><strong class="font-bold text-slate-800">Learning Objectives:</strong> ${weekData.objectives.join('; ')}.</p>
+                            </div>
+                            <div class="flex items-center space-x-2 ml-4 flex-shrink-0 pt-1">
+                                <label for="week-${weekData.week}" class="text-sm text-slate-600">Complete</label>
+                                <input type="checkbox" id="week-${weekData.week}" data-week="${weekData.week}" class="h-6 w-6 rounded border-slate-400 text-blue-600 focus:ring-blue-500 cursor-pointer" ${isCompleted ? 'checked' : ''}>
+                            </div>
+                        </div>
+                        <div class="mt-4 border-t border-slate-300 pt-4">
+                            <h4 class="text-lg font-semibold text-slate-800 mb-2">Detailed Study Sessions (Weekday 3h / Weekend 10h)</h4>
+                            <div class="grid md:grid-cols-2 gap-4">
+                                ${sessionsHtml}
+                            </div>
+                        </div>
+                    `;
+                    planContainer.appendChild(weekElement);
+                });
+
+                document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+                    checkbox.addEventListener('change', (e) => {
+                        const week = parseInt(e.target.dataset.week);
+                        if (e.target.checked) {
+                            completedWeeks.add(week);
+                        } else {
+                            completedWeeks.delete(week);
+                        }
+                        saveState();
+                        updateProgress();
+                    });
+                });
+            }
+
+            function createTabs() {
+                uniqueMonths.forEach(month => {
+                    const tab = document.createElement('button');
+                    tab.textContent = `Month ${month}`;
+                    tab.className = 'px-4 py-2 text-sm font-medium rounded-lg transition-colors duration-200 text-slate-700 bg-white shadow-sm hover:bg-slate-100 border border-slate-300';
+                    tab.dataset.month = month;
+                    tabsContainer.appendChild(tab);
+                });
+
+                const tabs = tabsContainer.querySelectorAll('button');
+                const initialMonth = 1;
+                
+                // Set initial active state
+                tabs.forEach(t => {
+                    if (parseInt(t.dataset.month) === initialMonth) {
+                        t.classList.add('tab-active');
+                    }
+                });
+
+                tabs.forEach(tab => {
+                    tab.addEventListener('click', () => {
+                        tabs.forEach(t => t.classList.remove('tab-active'));
+                        tab.classList.add('tab-active');
+                        renderPlan(parseInt(tab.dataset.month));
+                    });
+                });
+            }
+            
+            loadState();
+            createTabs();
+            renderPlan(1); // Load Month 1 by default
+            updateProgress();
+        });
+    </script>
+</body>
+</html>
