@@ -419,3 +419,4 @@ FodyWeavers.xsd
 
 # Large data files
 samples/creditcard.csv
+housing/california_housing_model.pkl
