@@ -56,24 +56,33 @@ print(f"Test R² Score: {test_score:.4f}")
 # Lasso Regression
 # -------------------------------
 
-alphas = [0.001, 0.01, 0.1, 1, 10, 50]
-
+alphas_lasso = np.logspace(-6, 2, 30)
+lasso_results = {}
 best_alpha = None
 best_score = -np.inf
 
-for a in alphas:
+for a in alphas_lasso:
     lasso = Lasso(alpha=a, max_iter=10000)
     lasso.fit(X_train_scaled, y_train)
     
+    cost_function = np.sum((lasso.predict(X_train_scaled) - y_train) ** 2) + a * np.sum(np.abs(lasso.coef_))
+    lasso_results[a] = cost_function
+
     score = lasso.score(X_test_scaled, y_test)
-    print(f"Alpha={a} -> Test R²: {score:.4f}")
+    print(f" alpha={a:>10} -> test R²: {score:.4f} -> cost function: {cost_function:.4f}")
     
     if score > best_score:
         best_score = score
         best_alpha = a
 
-print(f"\nBest alpha: {best_alpha}")
-print(f"Best Test R²: {best_score:.4f}")
+print(f"Best alpha: {best_alpha}, best test R² score: {best_score:.4f}")
+
+plt.plot(list(lasso_results.keys()), list(lasso_results.values()), marker='o')
+plt.xlabel('Alpha')
+plt.ylabel('Cost Function Value')
+plt.title('Lasso Regression Cost Function vs Alpha')
+plt.show()
+
 
 # -------------------------------
 # Ridge Regression
