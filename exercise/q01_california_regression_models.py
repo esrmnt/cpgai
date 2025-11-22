@@ -11,9 +11,8 @@ from sklearn.datasets import fetch_california_housing
 
 housing = fetch_california_housing(as_frame=True)
 
-print(housing.frame.info())
-print(housing.frame.describe())
-
+# print(housing.frame.info())
+# print(housing.frame.describe())
 
 # housing.frame.plot(
 #     kind="scatter",
@@ -30,16 +29,10 @@ y = housing.frame['MedHouseVal']
 # Split data into training and testing sets
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
-print("\nTraining set before scaling:")
-print(X_train.describe())
-
 # Scale the features
 scaler = StandardScaler()
 X_train_scaled = scaler.fit_transform(X_train)
 X_test_scaled = scaler.transform(X_test)
-
-print("\nTraining set after scaling:")
-print(pd.DataFrame(X_train_scaled, columns=X.columns).describe())   
 
 # Perform linear regression fit and train
 model = LinearRegression()
@@ -49,35 +42,32 @@ model.fit(X_train_scaled, y_train)
 train_score = model.score(X_train_scaled, y_train)
 test_score = model.score(X_test_scaled, y_test)
 
-print(f"\nTrain R² Score: {train_score:.4f}")
-print(f"Test R² Score: {test_score:.4f}")
+print(f"Train R² Score: {train_score:.4f} test R² Score: {test_score:.4f}")
 
 # -------------------------------
 # Lasso Regression
 # -------------------------------
 
-alphas_lasso = np.logspace(-6, 2, 30)
+lasso_alphas = np.logspace(-6, 2, 30)
 lasso_results = {}
-best_alpha = None
-best_score = -np.inf
 
-for a in alphas_lasso:
-    lasso = Lasso(alpha=a, max_iter=10000)
+for alpha in lasso_alphas:
+    lasso = Lasso(alpha=alpha, max_iter=10000)
     lasso.fit(X_train_scaled, y_train)
     
-    cost_function = np.sum((lasso.predict(X_train_scaled) - y_train) ** 2) + a * np.sum(np.abs(lasso.coef_))
-    lasso_results[a] = cost_function
-
     score = lasso.score(X_test_scaled, y_test)
-    print(f" alpha={a:>10} -> test R²: {score:.4f} -> cost function: {cost_function:.4f}")
-    
-    if score > best_score:
-        best_score = score
-        best_alpha = a
+    cost_function = np.sum((lasso.predict(X_train_scaled) - y_train) ** 2) + alpha * np.sum(np.abs(lasso.coef_))
 
-print(f"Best alpha: {best_alpha}, best test R² score: {best_score:.4f}")
+    lasso_results[alpha] = {
+        "cost_function": cost_function, 
+        "score": score
+    }
 
-plt.plot(list(lasso_results.keys()), list(lasso_results.values()), marker='o')
+best_alpha_from_results = max(lasso_results.items(), key=lambda kv: kv[1]["score"])[0]
+best_score_from_results = lasso_results[best_alpha_from_results]["score"]
+print(f"Best alpha from lasso_results: {best_alpha_from_results} -> test R²: {best_score_from_results:.4f}")
+
+plt.plot(list(lasso_results.keys()), [v["cost_function"] for v in lasso_results.values()], marker='x')
 plt.xlabel('Alpha')
 plt.ylabel('Cost Function Value')
 plt.title('Lasso Regression Cost Function vs Alpha')
