@@ -11,12 +11,16 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score, f1_score
 
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.ensemble import RandomForestClassifier
+
 wine = load_wine(as_frame=True)
 
 enable_eda = False
 enable_logistic_regression = True
 enable_smb_rbf = True
 enable_decision_tree = True
+enable_random_forest = True
 
 if enable_eda == True:  
     # ----------------------------
@@ -160,7 +164,6 @@ if enable_smb_rbf == True:
     print(f"F1 Score: {f1:.4f}")
 
 if enable_decision_tree == True:
-    from sklearn.tree import DecisionTreeClassifier
 
     model = DecisionTreeClassifier(random_state=42)
     model.fit(X_train, y_train)
@@ -169,6 +172,22 @@ if enable_decision_tree == True:
 
     accuracy = accuracy_score(y_test, y_pred)
     print(f"\nDecision Tree Model Accuracy: {accuracy:.4f}")
+
+    metrics_cnf = metrics.confusion_matrix(y_test, y_pred)
+    print("\nConfusion Matrix:")
+    print(metrics_cnf)
+
+    f1 = f1_score(y_test, y_pred, average='weighted')
+    print(f"F1 Score: {f1:.4f}")
+
+if enable_random_forest == True:
+    model = RandomForestClassifier(random_state=42)
+    model.fit(X_train, y_train)
+
+    y_pred = model.predict(X_test)
+
+    accuracy = accuracy_score(y_test, y_pred)
+    print(f"\nRandom Forest Model Accuracy: {accuracy:.4f}")
 
     metrics_cnf = metrics.confusion_matrix(y_test, y_pred)
     print("\nConfusion Matrix:")
