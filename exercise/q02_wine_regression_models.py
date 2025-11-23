@@ -3,7 +3,6 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 
-from IPython.display import display
 from sklearn.model_selection import train_test_split
 from sklearn.datasets import load_wine
 
@@ -17,85 +16,91 @@ print("Shape:", wine.frame.shape)
 print("\nDtypes:"), 
 print(wine.frame.dtypes)
 print("\nInfo:")
-wine.frame.info()
+print(wine.frame.info())
 
 print("\nHead:")
-display(wine.frame.head())
+print(wine.frame.head())
 
 print("\nRandom Sample:")
-display(wine.frame.sample(5))
+print(wine.frame.sample(5))
+
+#----------------------------
+#MISSING VALUES
+#----------------------------
+
+print("\nMissing Values in data:")
+
+if wine.frame.isna().sum().sum() > 0:
+    print("\nRows with Missing Values:")
+    print(wine.frame[wine.frame.isna().any(axis=1)])
+
+    plt.figure(figsize=(10,4))
+    sns.heatmap(wine.frame.isna(), cbar=False)
+    plt.title("Missing Value Map")
+    plt.show()
+elif wine.frame.isna().sum().sum() == 0:
+    print("\nNo missing values found.")
 
 # ----------------------------
-# MISSING VALUES
+# DESCRIPTIVE STATISTICS
 # ----------------------------
-# print("\nMissing Values:\n", wine.frame.isna().sum())
-
-# plt.figure(figsize=(10,4))
-# sns.heatmap(wine.frame.isna(), cbar=False)
-# plt.title("Missing Value Map")
-# plt.show()
-
-# # ----------------------------
-# # DESCRIPTIVE STATISTICS
-# # ----------------------------
-# print("\nDescribe:")
-# print(wine.frame.describe())
+print("\nDescribe:")
+print(wine.frame.describe())
 
 
-# # ----------------------------
-# # UNIQUE VALUE CHECK
-# # ----------------------------
-# for col in wine.frame.columns:
-#     print(f"{col}: {wine.frame[col].nunique()} unique values")
+# ----------------------------
+# UNIQUE VALUE CHECK
+# ----------------------------
+print("\nUnique Values per Column:")
+for i, col in enumerate(wine.frame.columns, 1):
+    print(f"{i:>2}. {col}: {wine.frame[col].nunique()} unique values")
 
-# # ----------------------------
-# # DISTRIBUTIONS
-# # ----------------------------
-# numeric_cols = wine.frame.select_dtypes(include=[np.number]).columns
+# ----------------------------
+# DISTRIBUTIONS
+# ----------------------------
+print("\nDistributions of data in the numeric columns:")
+numeric_cols = wine.frame.select_dtypes(include=[np.number]).columns
 
-# wine.frame[numeric_cols].hist(figsize=(14, 10), bins=30)
-# plt.suptitle("Histograms")
-# plt.show()
+wine.frame[numeric_cols].hist(figsize=(14, 10), bins=30)
+plt.suptitle("Histograms")
+plt.show()
 
-# # KDE example for one column (if needed)
-# # sns.kdeplot(wine.frame["colname"]); plt.show()
+# KDE example for one column (if needed)
+# sns.kdeplot(wine.frame["alcalinity_of_ash"]); plt.show()
 
-# # ----------------------------
-# # CORRELATIONS
-# # ----------------------------
-# corr = wine.frame.corr(numeric_only=True)
+# ----------------------------
+# CORRELATIONS
+# ----------------------------
+print("\nCorrelation Matrix:")
+corr = wine.frame.corr(numeric_only=True)
+print(corr)
 
-# plt.figure(figsize=(12, 8))
-# sns.heatmap(corr, cmap="coolwarm", annot=False)
-# plt.title("Correlation Heatmap")
-# plt.show()
+plt.figure(figsize=(12, 8))
+sns.heatmap(corr, cmap="coolwarm", annot=False)
+plt.title("Correlation Heatmap")
+plt.show()
 
-# # ----------------------------
-# # OUTLIERS (BOXPLOTS FOR NUMERICAL FEATURES)
-# # ----------------------------
-# plt.figure(figsize=(12, 6))
-# wine.frame[numeric_cols].boxplot(rot=90)
-# plt.title("Boxplots")
-# plt.show()
+# ----------------------------
+# OUTLIERS (BOXPLOTS FOR NUMERICAL FEATURES)
+# ----------------------------
+plt.figure(figsize=(12, 6))
+wine.frame[numeric_cols].boxplot(rot=90)
+plt.title("Boxplots")
+plt.show()
 
-# # ----------------------------
-# # TARGET RELATIONSHIPS
-# # ----------------------------
-# target = "target"
+# ----------------------------
+# TARGET RELATIONSHIPS
+# ----------------------------
+selected_cols = ["alcohol", "malic_acid", "color_intensity", "hue"]
+target = "target"
 
-# for col in numeric_cols:
-#     if col == target:
-#         continue
-#     plt.figure(figsize=(5, 4))
-#     plt.scatter(wine.frame[col], wine.frame[target], alpha=0.5)
-#     plt.xlabel(col)
-#     plt.ylabel(target)
-#     plt.title(f"{col} vs {target}")
-#     plt.show()
-
-# # For categoricals → group mean
-# cat_cols = wine.frame.select_dtypes(include="object").columns
-# for col in cat_cols:
-#     print(f"\nGroup mean for {col}:")
-#     display(wine.frame.groupby(col)[target].mean().sort_values())
+for col in selected_cols:
+    if col == target:
+        continue
+    plt.figure(figsize=(5, 4))
+    plt.scatter(wine.frame[col], wine.frame[target], alpha=0.5)
+    plt.xlabel(col)
+    plt.ylabel(target)
+    plt.title(f"{col} vs {target}")
+    plt.show()
 
