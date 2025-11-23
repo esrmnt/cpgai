@@ -3,14 +3,20 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 
+from sklearn import metrics
+from sklearn.svm import SVC
 from sklearn.datasets import load_wine
 from sklearn.preprocessing import StandardScaler
 from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score, f1_score
 
 wine = load_wine(as_frame=True)
 
 enable_eda = False
+enable_logistic_regression = True
+enable_smb_rbf = True
+enable_decision_tree = True
 
 if enable_eda == True:  
     # ----------------------------
@@ -116,37 +122,57 @@ y = wine.frame['target']
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
 
 # Scale the features
-
 scaler = StandardScaler()
 X_train_scaled = scaler.fit_transform(X_train)
 X_test_scaled = scaler.transform(X_test)
 
-model = LogisticRegression(max_iter=1000)
-model.fit(X_train_scaled, y_train)
+if enable_logistic_regression == True:
+    model = LogisticRegression(max_iter=1000)
+    model.fit(X_train_scaled, y_train)
 
-model_train_score = model.score(X_train_scaled, y_train)
-model_test_score = model.score(X_test_scaled, y_test)
+    y_pred = model.predict(X_test_scaled)
 
-print(f"\nLogistic Regression")
-print(f"Train Accuracy: {model_train_score:.4f} Test Accuracy: {model_test_score:.4f}") 
+    accuracy = accuracy_score(y_test, y_pred)
+    print(f"\nLogistic Regression Model Accuracy: {accuracy:.4f}")
 
-print("\nCoefficients:")
-for feature, coef in zip(X.columns, model.coef_[0]):
-    print(f"{feature}: {coef:.4f}")
+    metrics_cnf = metrics.confusion_matrix(y_test, y_pred)
+    print("\nConfusion Matrix:")
+    print(metrics_cnf)
 
-# Visualize coefficients
-plt.figure(figsize=(10, 6))
-plt.bar(X.columns, model.coef_[0])
-plt.xticks(rotation=90)
-plt.title("Logistic Regression Coefficients")
-plt.show()
+    f1 = f1_score(y_test, y_pred, average='weighted')
+    print(f"F1 Score: {f1:.4f}")
 
-model_predictions = model.predict(X_test_scaled)
 
-pred_df = pd.DataFrame({
-    "Actuals": y_test.values,
-    "Predicted": model_predictions
-}, index=y_test.index)
+if enable_smb_rbf == True:
+    model = SVC(kernel='rbf', gamma='scale')
+    model.fit(X_train_scaled, y_train)
 
-print ("\nPredictions vs Actuals:")
-print(pred_df.head(100))
+    y_pred = model.predict(X_test_scaled)
+
+    accuracy = accuracy_score(y_test, y_pred)
+    print(f"\nSVM RBF Model Accuracy: {accuracy:.4f}")
+
+    metrics_cnf = metrics.confusion_matrix(y_test, y_pred)
+    print("\nConfusion Matrix:")
+    print(metrics_cnf)
+
+    f1 = f1_score(y_test, y_pred, average='weighted')
+    print(f"F1 Score: {f1:.4f}")
+
+if enable_decision_tree == True:
+    from sklearn.tree import DecisionTreeClassifier
+
+    model = DecisionTreeClassifier(random_state=42)
+    model.fit(X_train, y_train)
+
+    y_pred = model.predict(X_test)
+
+    accuracy = accuracy_score(y_test, y_pred)
+    print(f"\nDecision Tree Model Accuracy: {accuracy:.4f}")
+
+    metrics_cnf = metrics.confusion_matrix(y_test, y_pred)
+    print("\nConfusion Matrix:")
+    print(metrics_cnf)
+
+    f1 = f1_score(y_test, y_pred, average='weighted')
+    print(f"F1 Score: {f1:.4f}")
